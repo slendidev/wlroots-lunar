@@ -112,24 +112,6 @@ struct wlr_gles2_buffer {
 	struct wlr_addon addon;
 };
 
-struct wlr_gles2_texture {
-	struct wlr_texture wlr_texture;
-	struct wlr_gles2_renderer *renderer;
-	struct wl_list link; // wlr_gles2_renderer.textures
-
-	GLenum target;
-
-	// If this texture is imported from a buffer, the texture is does not own
-	// these states. These cannot be destroyed along with the texture in this
-	// case.
-	GLuint tex;
-	GLuint fbo;
-
-	bool has_alpha;
-
-	uint32_t drm_format; // for mutable textures only, used to interpret upload data
-	struct wlr_gles2_buffer *buffer; // for DMA-BUF imports only
-};
 
 struct wlr_gles2_render_pass {
 	struct wlr_render_pass base;
@@ -155,14 +137,8 @@ struct wlr_gles2_renderer *gles2_get_renderer(
 	struct wlr_renderer *wlr_renderer);
 struct wlr_gles2_render_timer *gles2_get_render_timer(
 	struct wlr_render_timer *timer);
-struct wlr_gles2_texture *gles2_get_texture(
-	struct wlr_texture *wlr_texture);
 struct wlr_gles2_buffer *gles2_buffer_get_or_create(struct wlr_gles2_renderer *renderer,
-	struct wlr_buffer *wlr_buffer);
-
-struct wlr_texture *gles2_texture_from_buffer(struct wlr_renderer *wlr_renderer,
-	struct wlr_buffer *buffer);
-void gles2_texture_destroy(struct wlr_gles2_texture *texture);
+       struct wlr_buffer *wlr_buffer);
 
 void push_gles2_debug_(struct wlr_gles2_renderer *renderer,
 	const char *file, const char *func);

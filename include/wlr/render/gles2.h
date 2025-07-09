@@ -48,4 +48,31 @@ bool wlr_texture_is_gles2(struct wlr_texture *texture);
 void wlr_gles2_texture_get_attribs(struct wlr_texture *texture,
 	struct wlr_gles2_texture_attribs *attribs);
 
+struct wlr_gles2_renderer;
+struct wlr_gles2_buffer;
+
+struct wlr_gles2_texture {
+       struct wlr_texture wlr_texture;
+       struct wlr_gles2_renderer *renderer;
+       struct wl_list link; /* wlr_gles2_renderer.textures */
+
+       GLenum target;
+
+       /* If this texture is imported from a buffer, the texture does not own
+        * these states. These cannot be destroyed along with the texture in this
+        * case. */
+       GLuint tex;
+       GLuint fbo;
+
+       bool has_alpha;
+
+       uint32_t drm_format; /* for mutable textures only, used to interpret upload data */
+       struct wlr_gles2_buffer *buffer; /* for DMA-BUF imports only */
+};
+
+struct wlr_gles2_texture *gles2_get_texture(struct wlr_texture *texture);
+struct wlr_texture *gles2_texture_from_buffer(struct wlr_renderer *renderer,
+       struct wlr_buffer *buffer);
+void gles2_texture_destroy(struct wlr_gles2_texture *texture);
+
 #endif
