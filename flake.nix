@@ -34,6 +34,8 @@
             glslang
             hwdata
             wayland
+            xwayland
+            cairo
           ];
 
           buildInputs = with pkgs; [
@@ -59,17 +61,17 @@
           ];
 
           mesonFlags = [
-            "-Dxwayland=disabled"
+            "-Dxwayland=enabled"
           ];
 
           # Optionally, your postFixup from above:
           postFixup = ''
-            					mkdir -p $examples/bin
-            					cd ./examples
-            					for binary in $(find . -executable -type f -printf '%P\n' | grep -vE '\.so'); do
-            						cp "$binary" "$examples/bin/wlroots-$binary"
-            					done
-            				'';
+            mkdir -p $examples/bin
+            cd ./examples
+            for binary in $(find . -executable -type f -printf '%P\n' | grep -vE '\.so'); do
+              cp "$binary" "$examples/bin/wlroots-$binary"
+            done
+          '';
 
           outputs = [
             "out"
